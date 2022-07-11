@@ -55,8 +55,8 @@ final class Extendmysqli extends \mysqli
     
     public function escape($value) 
     {
-		return $this->real_escape_string($value);
-	}
+	    return $this->real_escape_string($value);
+    }
     
     public function clean($value) 
     {
