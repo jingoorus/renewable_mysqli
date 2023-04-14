@@ -28,22 +28,16 @@ class ConnectionManager
 
     public function query(string $query)
     {
-        if ( is_null( @$this->connection ) || //Если первый запуск
-             false === @$this->connection->stat() || //Если коннект напрочь отвалился
-             is_null( @$this->connection->stat() ) ) { //Если коннект отвалился но процесс еще не выгружен
+        if ( $this->connection->ping() ) {
 
-            $this->connection = new Extendmysqli($this->data[0], $this->data[1], $this->data[2], $this->data[3]);
-            //$this->connection = new \mysqli($this->data[0], $this->data[1], $this->data[2], $this->data[3]);
-            
-            if ( $this->connection->connect_errno ) {
+            return $this->connection->query($query);
 
-                trigger_error('<br><b>DB Connection in ConnectionManager.class error</b>: ' . $this->connection->connect_error, E_USER_ERROR);
+        } else {
 
-                return null;
-            }
-        }
+            trigger_error('<br><b>DB Connection in ConnectionManager.class error</b>: ' . $this->connection->connect_error, E_USER_ERROR);
 
-        return $this->connection->query($query);
+            return null;
+        }  
     }
 
     public function __get(string $property_name)
